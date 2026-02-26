@@ -4,17 +4,29 @@ require('dotenv').config();
 
 const db = require('./config/database');
 const authRoutes = require('./routes/auth');
-const partnersRoutes = require('./routes/partners');  // ← ADD THIS
+const partnersRoutes = require('./routes/partners');
 
 const app = express();
 
+// CORS configuration - Allow your Netlify frontend
+const corsOptions = {
+  origin: [
+    'https://norgen-trade-frontend.netlify.app',  // Your live frontend
+    'http://localhost:3000',                        // Local development
+    'http://localhost:3001',                        // Alternative local port
+    'http://localhost:3002'                         // Another local port
+  ],
+  credentials: true,                                 // Allow cookies/auth headers
+  optionsSuccessStatus: 200                          // For legacy browser support
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/partners', partnersRoutes);  // ← ADD THIS
+app.use('/api/partners', partnersRoutes);
 
 // Test database connection
 app.get('/api/test', async (req, res) => {
